@@ -139,16 +139,13 @@
                     $totalScore += $_POST[$field];
                 }
             }
-
+            $totalScore = $totalScore/3;
             array_pop($values);
             // Thêm giá trị tổng điểm vào mảng giá trị
             $values[] = "'$totalScore'";
         }
 
-
-                $columns_list = implode(", ", array_keys($columns));
-          
-          
+                $columns_list = implode(", ", array_keys($columns));          
                 $values_list = implode(", ", $values);
   
                 $query = "INSERT INTO " . TABLE_NAME . " ($columns_list) VALUES ($values_list)";
@@ -160,7 +157,7 @@
                     echo "<div class='message'><p>Lỗi khi thêm sinh viên: " . mysqli_error($connect) . "</p></div>";
                 }
             }
-            mysqli_close($connect);
+            mysqli_close($connect); 
         }
         ?>
     </div>

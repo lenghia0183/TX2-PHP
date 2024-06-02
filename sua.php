@@ -88,17 +88,40 @@
         <?php
                 require_once 'config.php';
                 $connect = mysqli_connect(HOST, ACCOUNT_NAME, PASSWORD, DATABASE_NAME);
-            
+
                 if (!$connect) {
                     echo "<p>Kết nối thất bại</p>";
                 } else {
                     if (isset($_POST['submit'])) {
                         $primaryFieldValue = $_POST[PRIMARY_FIELD_KEY];
+
+                        if ($isCalculate) {
+                            $totalScore = 0;
+                            foreach ($calculatedFields as $field => $fieldName) {
+                                if (isset($_POST[$field])) {
+                                    $totalScore += $_POST[$field];
+                                }
+                            }
+                            $totalScore = $totalScore /3;
+                        }
+
                         $setValues = [];
                         foreach ($columns as $col => $colName) {
                             if ($col != IMAGE_FIELD_KEY) {
-                                $setValues[] = "$col='" . $_POST[$col] . "'";
-                            }
+                                if($col === $calculatedFieldKey ){
+                                    $setValues[] = "$col='" . $totalScore . "'";
+                                } else {
+                                    $setValues[] = "$col='" . $_POST[$col] . "'";
+                                }
+
+                                
+                            } 
+                        }
+                          // Tính tổng điểm nếu $isCalculate là true
+        
+                          foreach ($setValues as $key => $value) {
+                            echo $value;
+                         
                         }
                         
                         // Kiểm tra xem người dùng đã tải lên ảnh mới hay không
@@ -135,7 +158,7 @@
                               <input type="hidden" name="<?php echo PRIMARY_FIELD_KEY; ?>" value="<?php echo $row[PRIMARY_FIELD_KEY]; ?>">
                                 <?php
                                 foreach ($columns as $col => $colName) {
-                                    if ($col == IMAGE_FIELD_KEY || $col == PRIMARY_FIELD_KEY) { // Loại bỏ trường ảnh khỏi form cập nhật thông tin
+                                    if ($col == IMAGE_FIELD_KEY || $col == PRIMARY_FIELD_KEY || $col == $calculatedFieldKey ) { // Loại bỏ trường ảnh khỏi form cập nhật thông tin
                                         continue;
                                     }
                                     ?>
